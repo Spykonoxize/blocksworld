@@ -18,7 +18,7 @@ public class Implication implements Constraint {
         this.s2 = s2;
     }
 
-    // Ajoute les variables à notre ensemble et le renvoie
+    // Adds the two variables involved in the implication to the scope set and returns it
     @Override
     public Set<Variable> getScope() {
         Set<Variable> scope = new HashSet<Variable>();
@@ -27,15 +27,13 @@ public class Implication implements Constraint {
         return scope;
     }
 
-    // Renvoie false dans le cas où la valeur de la première variable de l'état est
-    // contenue dans le premier ensemble et la valeur de la seconde variable de
-    // l'état n'est pas contenue dans le second ensemble sinon revoie true
+    // Returns false if the value of the first variable in the state is contained in the first set and the value of the second variable in the state is not contained in the second set, otherwise returns true
     @Override
     public boolean isSatisfiedBy(Map<Variable, Object> map) {
         Object valeur1 = map.get(var1);
         Object valeur2 = map.get(var2);
         if (valeur1 == null || valeur2 == null) {
-            throw new IllegalArgumentException("Toute les variables du scope doivent avoir une valeur");
+            throw new IllegalArgumentException("Variables from the scope must have a value");
         }
         if (s1.contains(valeur1)) {
             return s2.contains(valeur2);

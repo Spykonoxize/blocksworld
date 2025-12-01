@@ -11,14 +11,14 @@ public class Executable {
     private static final int NB_PILES = 5;
 
     public static void main(String[] args) throws Exception {
-        // Booléen qui va nous servir pour faire des tests
+        // Boolean to track if all tests are successful
         boolean ok = true;
 
-        // On crée nos monde
+        // We create our worlds
         BlocksWorldRegular blocksWorldRegular = new BlocksWorldRegular(NB_BLOCKS, NB_PILES);
         BlocksWorldCroissant blocksWorldCroissant = new BlocksWorldCroissant(NB_BLOCKS, NB_PILES);
 
-        // On va créer des listes trées pour faciliter la création de configuration
+        // We will create sorted lists to facilitate the creation of configurations
         SortedSet<Variable> sortedSetOnb = new TreeSet<>(BlocksWorld.COMPARATOR);
         SortedSet<Variable> sortedSetFixedb = new TreeSet<>(BlocksWorld.COMPARATOR);
         SortedSet<Variable> sortedSetFreep = new TreeSet<>(BlocksWorld.COMPARATOR);
@@ -32,7 +32,7 @@ public class Executable {
         HashMap<Variable, Object> setupForCroissant = new HashMap<>();
         HashMap<Variable, Object> setupForRegular = new HashMap<>();
 
-        // Voici la première configuration pour un monde régulier
+        // Here is the first configuration for a regular world
         //
         //           2
         //  1        3
@@ -56,7 +56,7 @@ public class Executable {
         setupForRegular.put(listFreep.get(3), true);
         setupForRegular.put(listFreep.get(4), true);
 
-        // On teste les contraintes régulières sur cette configuration
+        // We test the regular constraints on this configuration
         for (Implication implication : blocksWorldRegular.getSetConstraintRegular()) {
             if (!implication.isSatisfiedBy(setupForRegular)) {
                 ok = false;
@@ -70,7 +70,7 @@ public class Executable {
             ok = true;
         }
                 
-        // Voici la seconde configuration pour un monde croissant
+        // Here is the second configuration for a croissant world
         //
         //       4
         //       3
@@ -94,7 +94,7 @@ public class Executable {
         setupForCroissant.put(listFreep.get(3), false);
         setupForCroissant.put(listFreep.get(4), false);
 
-        // On teste les contraintes croissantes sur cette configuration
+        // We test the croissant constraints on this configuration
         for (Implication implication : blocksWorldCroissant.getSetConstraintCroissant()) {
             if (!implication.isSatisfiedBy(setupForCroissant)) {
                 ok = false;
@@ -108,7 +108,7 @@ public class Executable {
             ok = true;
         }
 
-        // Voici la troisième configuration pour un monde régulier et croissant
+        // Here is the third configuration for a regular and croissant world
         //
         //  4        
         //  2        
@@ -133,7 +133,7 @@ public class Executable {
         setupForRegular.put(listFreep.get(3), false);
         setupForRegular.put(listFreep.get(4), true);
 
-        // On teste les contraintes régulières et croissantes sur cette configuration
+        // We test the regular and croissant constraints on this configuration
         for (Implication implication : blocksWorldRegular.getSetConstraintRegular()) {
             if (!implication.isSatisfiedBy(setupForRegular)) {
                 ok = false;
@@ -153,7 +153,7 @@ public class Executable {
             ok = true;
         }
 
-        //On essaye sur les contraintes de BlocksWorldConstraint aussi
+        // We also try on the constraints of BlocksWorldConstraint
         HashMap<Variable, Object> mapOnb = new HashMap<>();
         HashMap<Variable, Object> mapFixedb = new HashMap<>();
         HashMap<Variable, Object> mapFreep = new HashMap<>();

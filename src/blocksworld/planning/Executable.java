@@ -46,13 +46,13 @@ public class Executable {
         Map<Variable, Object> initialState = new HashMap<>();
         Map<Variable, Object> finalState = new HashMap<>();
 
-        // Voici l'état initial
+        // Initial state
         //
         //          
-        //          1
-        //  2       0   
+        //              1
+        //  2           0
         // -1  -2  -3  -4
-        initialState.put(listOnb.get(0), -3);
+        initialState.put(listOnb.get(0), -4);
         initialState.put(listOnb.get(1), 0);
         initialState.put(listOnb.get(2), -1);
 
@@ -62,10 +62,10 @@ public class Executable {
 
         initialState.put(listFreep.get(0), false);
         initialState.put(listFreep.get(1), true);
-        initialState.put(listFreep.get(2), false);
-        initialState.put(listFreep.get(3), true);
+        initialState.put(listFreep.get(2), true);
+        initialState.put(listFreep.get(3), false);
 
-        // Voici l'état final (Le bloc 1 pourra être sur la pile -1 ou -2)
+        // Final state (Block 1 can be on pile -1 or -2)
         //
         //           
         //              2
@@ -79,13 +79,13 @@ public class Executable {
         finalState.put(listFreep.get(2), true);
         finalState.put(listFreep.get(3), false);
         
-        // Ensemble des actions possibles
+        // Set of actions
         Set<Action> actions = new Actions(NB_BLOCKS, NB_PILES).getSetActions();
 
-        // Notre but
+        // Our goal
         Goal goal = new BasicGoal(finalState); 
 
-        // L'ensemble des planner
+        // Set of planners
         DFSPlanner dfs = new DFSPlanner(initialState, actions, goal);
         dfs.activateNodeCount(true);
         double start = System.currentTimeMillis();
@@ -163,8 +163,10 @@ public class Executable {
         frame.setSize(800, 600);
         */
 
+        // Live simulation of the plan found by DFS
         BWIntegerGUI gui = new BWIntegerGUI(NB_BLOCKS);
         JFrame frame = new JFrame("BlocksWorld Live");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         BWState<Integer> bwState = makeBWState(initialState);
         BWComponent<Integer> component = gui.getComponent(bwState);
         frame.add(component);
@@ -180,6 +182,9 @@ public class Executable {
             newState=a.successor(newState);
             component.setState(makeBWState(newState));
             }
-            System.out.println("Simulation of plan: done.");        
+        System.out.println("Simulation of plan: done.");
+        try { Thread.sleep(1000); }
+        catch (InterruptedException e) { e.printStackTrace(); }
+        System.exit(0);
     }
 }

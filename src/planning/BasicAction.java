@@ -19,24 +19,23 @@ public class BasicAction implements Action {
 
     @Override
     public boolean isApplicable(Map<Variable, Object> etat) {
-        // On vérifie si l'ensemble des clés de la précondition sont présente dans
-        // l'ensemble des clés de l'état
+        // We check if the set of keys in the precondition is present in the set of keys in the state
         if (!etat.keySet().containsAll(precondition.keySet())) {
             return false;
         }
 
-        // On vérifie si les valeurs associées aux clés de la précondition correspondent
+        // We check if the values associated with the keys in the precondition match
         for (Map.Entry<Variable, Object> entry : precondition.entrySet()) {
             Variable key = entry.getKey();
             Object expectedValue = entry.getValue();
-            // récupération de la valeur associée à la même clé dans l'état
+            // Retrieval of the value associated with the same key in the state
             Object actualValue = etat.get(key);
 
             if (!expectedValue.equals(actualValue)) {
                 return false;
             }
         }
-        // Sinon l'action est applicable
+        // Otherwise the action is applicable
         return true;
     }
 
@@ -58,7 +57,7 @@ public class BasicAction implements Action {
 
     @Override
     public String toString(){
-        return "precondition: [" + precondition + "] => effets: [" + effet + "]\n";
+        return "precondition: [" + precondition + "] => effects: [" + effet + "]\n";
     }
 
 }

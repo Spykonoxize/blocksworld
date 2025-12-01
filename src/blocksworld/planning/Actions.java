@@ -23,16 +23,16 @@ public class Actions {
 
     /*
      * ACTIONS:
-     * 1. déplacer un bloc b du dessus d’un bloc b′ vers le dessus d’un bloc b′′,
-     * 2. déplacer un bloc b du dessus d’un bloc b′ vers une pile vide p,
-     * 3. déplacer un bloc b du dessous d’une pile p vers le dessus d’un bloc b′,
-     * 4. déplacer un bloc b du dessous d’une pile p vers une pile vide p′.
+     * 1. move a block b from on top of block b′ to on top of block b′′,
+     * 2. move a block b from on top of block b′ to an empty pile p,
+     * 3. move a block b from the bottom of pile p to on top of block b′,
+     * 4. move a block b from the bottom of pile p to an empty pile p′.
      */
 
     private void createActions(){
-        // Les déplacements sont sous la forme suivante :
-        // bloc -> SUR -> bloc ou pile -> VERS -> bloc ou pile
-        // On fait donc un ensemble qui contient tout les blocks et toutes les piles ce qui permet d'avoir un code plus propre et plus factorisé
+        // Movements are in the following form:
+        // block -> ON -> block or pile -> TO -> block or pile
+        // We create a set containing all blocks and all piles for cleaner and more factored code
         Set<Variable> blocksAndPiles = new HashSet<>(blocksWorldConstraint.getSetFixedb());
         blocksAndPiles.addAll(blocksWorldConstraint.getSetFreep());
 
@@ -45,14 +45,14 @@ public class Actions {
         sortedSetFixedb.addAll(new HashSet<>(blocksWorldConstraint.getSetFixedb()));
         sortedSetFreep.addAll(new HashSet<>(blocksWorldConstraint.getSetFreep()));
 
-        // On crée met tous les ensembles dans des sortedList pour pouvoir faire des get
+        // We put all sets into sortedLists to be able to use get
         sorteSetFreeAndOnb.addAll(blocksWorldConstraint.getSetFreep());
         sorteSetFreeAndOnb.addAll(blocksWorldConstraint.getSetOnb());
         ArrayList<Variable> sorteListFreeAndOnb = new ArrayList<>(sorteSetFreeAndOnb);
 
         sortedSetOnb.addAll(blocksWorldConstraint.getSetOnb());
         ArrayList<Variable> sortedListOnb = new ArrayList<>(sortedSetOnb);
-        // La liste triée qui suit nous servira à créer la précondition qui dit que le bloc b doit pouvoir être déplacé => (fixedb = false)
+        // The following sorted list will be used to create the precondition that block b must be movable => (fixedb = false)
         sortedSetFixedb.addAll(blocksWorldConstraint.getSetFixedb());
         ArrayList<Variable> sortedListFixedb = new ArrayList<>(sortedSetFixedb);
 
@@ -70,23 +70,23 @@ public class Actions {
                         Map<Variable, Object> preconditions = new HashMap<>();
                         Map<Variable, Object> effets = new HashMap<>();
                         
-                        // Si b' est un bloc
+                        // If b' is a block
                         if (bOrPPrime > -1) {
-                            effets.put(sortedListFixedb.get(bOrPPrime), false); // b' est fixé
-                        } else { // Si b' est une pile
-                            effets.put(sortedListFreep.get(-(bOrPPrime+1)), true); // -(bPrimeName+1) pour trouvé la bonne pile dans la sortedList
+                            effets.put(sortedListFixedb.get(bOrPPrime), false); // b' is fixed
+                        } else { // If b' is a pile
+                            effets.put(sortedListFreep.get(-(bOrPPrime+1)), true); // -(bPrimeName+1) to find the correct pile in the sortedList
                         }
-                        // Si b'' est une pile
+                        // If b'' is a pile
                         if (bOrPPrimePrime < 0) {
-                            preconditions.put(sortedListFreep.get(-(bOrPPrimePrime+1)), true); // p' doit être free
-                            effets.put(sortedListFreep.get(-(bOrPPrimePrime+1)), false); // p' va être non free
-                        } else { // Si b'' est un bloc
-                            preconditions.put(sortedListFixedb.get(bOrPPrimePrime), false); // b'' n'est pas fixé
-                            effets.put(sortedListFixedb.get(bOrPPrimePrime), true); // bPrimePrime va être fixé
+                            preconditions.put(sortedListFreep.get(-(bOrPPrimePrime+1)), true); // p' must be free
+                            effets.put(sortedListFreep.get(-(bOrPPrimePrime+1)), false); // p' will be non-free
+                        } else { // If b'' is a block
+                            preconditions.put(sortedListFixedb.get(bOrPPrimePrime), false); // b'' is not fixed
+                            effets.put(sortedListFixedb.get(bOrPPrimePrime), true); // bPrimePrime will be fixed
                         }
-                        preconditions.put(sortedListFixedb.get(b), false); // b n'est pas fixé
-                        preconditions.put(sortedListOnb.get(b), bOrPPrime); // b est sur b' ou p
-                        effets.put(sortedListOnb.get(b), bOrPPrimePrime); // b va sur b'' ou p'
+                        preconditions.put(sortedListFixedb.get(b), false); // b is not fixed
+                        preconditions.put(sortedListOnb.get(b), bOrPPrime); // b is on b' or p
+                        effets.put(sortedListOnb.get(b), bOrPPrimePrime); // b goes on b'' or p'
 
                         Action action = new BasicAction(preconditions, effets, 2);
                         setActions.add(action);

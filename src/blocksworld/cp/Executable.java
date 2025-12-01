@@ -90,7 +90,7 @@ public class Executable {
         System.out.println(solve);
         System.out.println("Time => " + (end - start) + " ms\n");
 
-        // On fini par avoir un stack overflow et ce même en réduisant la taile du monde
+        // Stack overflow
         /*
         variableHeuristic = new NbConstraintsVariableHeuristic(setConstraintCroissant, true);
         valueHeuristic = new RandomValueHeuristic(r);
@@ -121,8 +121,8 @@ public class Executable {
         System.out.println("BackTrack Solver => ");
         System.out.println(solve);
         System.out.println("Time => " + (end - start) + " ms\n");
-
-        // On fini par avoir un stack overflow et ce même en réduisant la taile du monde
+        
+        // Stack overflow
         /*
         variableHeuristic = new DomainSizeVariableHeuristic(false);
         valueHeuristic = new RandomValueHeuristic(r);
@@ -152,5 +152,9 @@ public class Executable {
         frame.pack();
         frame.setVisible(true);
         frame.setSize(800, 600);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        try { Thread.sleep(4000); }
+        catch (InterruptedException e) { e.printStackTrace(); }
+        System.exit(0);
     }
 }

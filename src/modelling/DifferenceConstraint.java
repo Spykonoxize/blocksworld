@@ -14,7 +14,7 @@ public class DifferenceConstraint implements Constraint {
         this.var2 = var2;
     }
 
-    // Ajoute les variables à notre ensemble et le renvoie
+    // Adds the two variables involved in the difference constraint to the scope set and returns it
     @Override
     public Set<Variable> getScope() {
         Set<Variable> scope = new HashSet<Variable>();
@@ -23,14 +23,13 @@ public class DifferenceConstraint implements Constraint {
         return scope;
     }
 
-    // Retourne true si les deux varaibles de l'état sont différentes sinon renvoie
-    // false
+    // Returns true if the two variables in the state are different, otherwise returns false
     @Override
     public boolean isSatisfiedBy(Map<Variable, Object> map) {
         Object valeur1 = map.get(var1);
         Object valeur2 = map.get(var2);
         if (valeur1 == null || valeur2 == null) {
-            throw new IllegalArgumentException("Toute les variables du scope doivent avoir une valeur");
+            throw new IllegalArgumentException("Variables from the scope must have a value");
         }
         return !valeur1.equals(valeur2);
     }

@@ -27,44 +27,44 @@ public class AStarPlanner implements Planner {
 
     @Override
     public List<Action> plan() {
-        Map<Map<Variable, Object>, Action> plan = new HashMap<>(); // Cette variable contiendra la pile des actions pour arriver au but
-        Map<Map<Variable, Object>, Map<Variable, Object>> father = new HashMap<>(); // Cette variable contient les pères des noeuds explorés
-        Map<Map<Variable, Object>, Float> distance = new HashMap<>(); // Celle-ci contiendra distance pour chaque état
-        Map<Map<Variable, Object>, Float> value = new HashMap<>(); // Celle-ci la liste du coût des actions pour arriver jusqu'à l'état associé
-        ArrayList<Map<Variable, Object>> open = new ArrayList<>(); // Celle-ci la liste des ouverts, donc des états à explorer
-        open.add(etatInit); // On ajoute l'état initial car ici c'est le prochain que nous allons explorer tant qu'il reste des noeuds à explorer
-        father.put(etatInit, null); // On ajoute l'état initial dont le père est null car il est l'état de départ
-        distance.put(etatInit, 0f); // On ajoute l'état initial dont la distance est 0 car c'est notre point de départ
-        value.put(etatInit, heuristic.estimate(etatInit)); // On estime le chemin le plus court depuis l'état initial.
+        Map<Map<Variable, Object>, Action> plan = new HashMap<>(); // This variable will contain the stack of actions to reach the goal
+        Map<Map<Variable, Object>, Map<Variable, Object>> father = new HashMap<>(); // This variable contains the parents of explored nodes
+        Map<Map<Variable, Object>, Float> distance = new HashMap<>(); // This one will contain the distance for each state
+        Map<Map<Variable, Object>, Float> value = new HashMap<>(); // This one the list of the cost of actions to reach the associated state
+        ArrayList<Map<Variable, Object>> open = new ArrayList<>(); // This one the list of open nodes, i.e., states to explore
+        open.add(etatInit); // We add the initial state because here it is the next one we will explore as long as there are nodes to explore
+        father.put(etatInit, null); // We add the initial state whose parent is null because it is the starting state
+        distance.put(etatInit, 0f); // We add the initial state whose distance is 0 because it is our starting point
+        value.put(etatInit, heuristic.estimate(etatInit)); // We estimate the shortest path from the initial state.
         while (!open.isEmpty()) {
-            // On instancie en prenant l'élément qui est à la plus courte distance hestimé et on l'enlève de la liste des ouverts
+            // We instantiate by taking the element with the shortest estimated distance and remove it from the list of open nodes
             Map<Variable, Object> instantiation = argmin(open, value);
             if (activate == true) {
                 nodeCount++;
             }
-            // Si on atteint un but on l'ajoute à la liste
+            // If we reach a goal we add it to the list
             if (but.isSatisfiedBy(instantiation)) {
                 return getBFSPlan(father, plan, instantiation);
             } else {
-                // Sinon on enlève l'instantiation de la liste des ouverts
+                // Otherwise we remove the instantiation from the list of open nodes
                 open.remove(instantiation);
-                // Pour chaque action applicable à l'état actuel
+                // For each action applicable to the current state
                 for (Action action : actions) {
                     if (action.isApplicable(instantiation)) {
-                        // On enregistre l'état suivant dans suivant
+                        // We record the next state in suivant
                         Map<Variable, Object> suivant = action.successor(instantiation);
-                        // Si jamais l'état suivant n'était pas connu alors on initialise sa distance à +∞
+                        // If the next state was not known then we initialize its distance to +∞
                         if (!distance.containsKey(suivant)) {
                             distance.put(suivant, Float.MAX_VALUE);
                         }
-                        // Si sa distance était déjà connu et si elle est plus petite alors on met à jour dans distance.
-                        // La distance est calculée du point de départ vers le point où l'on est, donc les coûts de parcours s'accumulent
+                        // If its distance was already known and if it is smaller then we update it in distance.
+                        // The distance is calculated from the starting point to the point where we are, so the traversal costs accumulate
                         if (distance.get(suivant) > distance.get(instantiation) + action.getCost()) {
-                            // On met à jour la distance de suivant en additionnant la distance jusqu'à intantiation + le coût de l'action.
+                            // We update the distance of suivant by adding the distance to instantiation + the cost of the action.
                             distance.put(suivant, distance.get(instantiation) + action.getCost());
-                            // On ajoute la valeur du chemin jusque suivant + "le plus court" hestimé jusqu'au but
+                            // We add the value of the path to suivant + the "shortest" estimated h to the goal
                             value.put(suivant, distance.get(suivant) + heuristic.estimate(suivant));
-                            // On met à jour father, plan et open en y ajoutant l'état suivant
+                            // We update father, plan, and open by adding the next state
                             father.put(suivant, instantiation);
                             plan.put(suivant, action);
                             open.add(suivant);

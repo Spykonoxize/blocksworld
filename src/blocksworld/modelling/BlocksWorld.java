@@ -9,16 +9,16 @@ import modelling.Variable;
 public class BlocksWorld {
 
     // Variables
-    private int nbBlock; // Nombre de bloc dans le monde
-    private int nbPile; // Nombre de pile dans le monde
-    private Set<Variable> setOnb = new HashSet<>(); // L'ensemble des onB
-    private Set<BooleanVariable> setFixedb = new HashSet<>(); // L'ensemble des fixedB
-    private Set<BooleanVariable> setFreep = new HashSet<>(); // L'ensemble des freeP
-    private Set<Variable> setCombined = new HashSet<>(); // L'nesemble contenant toutes les variables du monde
+    private int nbBlock; // Number of blocks in the world
+    private int nbPile; // Number of piles in the world
+    private Set<Variable> setOnb = new HashSet<>(); // The set of onB
+    private Set<BooleanVariable> setFixedb = new HashSet<>(); // The set of fixedB
+    private Set<BooleanVariable> setFreep = new HashSet<>(); // The set of freeP
+    private Set<Variable> setCombined = new HashSet<>(); // The set containing all the variables in the world
 
     public static final Comparator<Variable> COMPARATOR = (var1, var2) -> var1.getName().compareTo(var2.getName());
 
-    // Constructeurs
+    // Constructors
     public BlocksWorld(int nbBlock, int nbPile) {
         this.nbBlock = nbBlock;
         this.nbPile = nbPile;
@@ -50,48 +50,47 @@ public class BlocksWorld {
         return setCombined;
     }
 
-    // Méthodes
+    // Methods
     private void create() {
-        // On crée un domaine dans lequel on y met tout les blocs possible
+        // We create a domain in which we put all possible blocks
         Set<Object> domain = new HashSet<>();
         for (int block = 0; block < nbBlock; block++) {
             domain.add(block);
         }
-        // On crée toutes les piles (Le type BooleanVariable fait que le domaine est attribué à la création de l'objet)
+        // We create all the piles (The BooleanVariable type means that the domain is assigned when the object is created)
         for (int pile = 1; pile <= nbPile; pile++) {
             domain.add(-pile);
-            BooleanVariable freep = new BooleanVariable(String.valueOf(-pile)); // Les variables freep auront un nom sous la forme "-1"
+            BooleanVariable freep = new BooleanVariable(String.valueOf(-pile)); // The freep variables will have a name in the form "-1"
             setFreep.add(freep);
         }
-        // Pour chaque onB on crée un sous domaine (domaine générer au-dessus privé du bloc lui-même)
-        // Et on crée nos fixedB en utilisant le type BooleanVariable 
+        // For each onB we create a subdomain (domain generated above without the block itself) and we create our fixedB using the BooleanVariable type 
         for (int block = 0; block < nbBlock; block++) {
             Set<Object> temp = new HashSet<>(domain);
             temp.remove(block);
-            Variable onb = new Variable("b" + String.valueOf(block), temp); // Les variables onb auront un nom sous la forme "b0"
-            BooleanVariable fixedb = new BooleanVariable(String.valueOf(block)); // Les variables fixedb auront un nom sous la forme "2"
+            Variable onb = new Variable("b" + String.valueOf(block), temp); // The onb variables will have a name in the form "b0"
+            BooleanVariable fixedb = new BooleanVariable(String.valueOf(block)); // The fixedb variables will have a name in the form "2"
             setOnb.add(onb);
             setFixedb.add(fixedb);
         }
         createSetCombined();
     }
 
-    // Méthodes qui crée un ensemble contenant toutes les varaibles
+    // Auxiliary method that allows us to create the combined set
     private void createSetCombined() {
         setCombined.addAll(setOnb);
         setCombined.addAll(setFixedb);
         setCombined.addAll(setFreep);
     }
 
-    // Méthode auxiliaire nous permetant de récupérer l'entier auquel correspond le bloc via un string.
-    // Exemple deleteB("b7") retorunera l'entier 7 pour le bloc n°7
-    // On avait oublié la méthode hashCode()
+    // Auxiliary method that allows us to retrieve the integer corresponding to the block from a string.
+    // Example deleteB("b7") will return the integer 7 for block number 7
+    // Should use hashcode instead of string parsing for better performance
     public static int deleteB(String string) {
-        // Pour les onB
+        // For onB
         if(string.contains("b")){
             return Integer.valueOf(string.split("b")[1]);
         }
-        return Integer.valueOf(string); // Pour les fixedB et les piles
+        return Integer.valueOf(string); // For fixedB and piles
     }
 
     @Override

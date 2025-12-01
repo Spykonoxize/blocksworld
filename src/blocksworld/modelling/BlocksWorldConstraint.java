@@ -9,10 +9,10 @@ import modelling.Variable;
 
 public class BlocksWorldConstraint extends BlocksWorld {
 
-	private Set<Constraint> setConstraint = new HashSet<>(); // L'ensemble de toutes les contraintes
-	private Set<DifferenceConstraint> setDifferenceConstraint = new HashSet<>(); // L'ensemble des contraintes b != b'
-	private Set<Implication> setImplicationFixedb = new HashSet<>(); // L'ensemble des contraintes onB = b' => b' = true
-	private Set<Implication> setImplicationFreep = new HashSet<>(); // L'ensemble des contraintes onB = p => p = false
+	private Set<Constraint> setConstraint = new HashSet<>(); // Set of all constraints
+	private Set<DifferenceConstraint> setDifferenceConstraint = new HashSet<>(); // Set of all b != b' constraints
+	private Set<Implication> setImplicationFixedb = new HashSet<>(); // Set of all onB = b' => b' = true constraints
+	private Set<Implication> setImplicationFreep = new HashSet<>(); // Set of all onB = p => p = false constraints
 
 	public BlocksWorldConstraint(int nbBloc, int nbPile) {
 		super(nbBloc, nbPile);
@@ -36,9 +36,9 @@ public class BlocksWorldConstraint extends BlocksWorld {
 		return setImplicationFreep;
 	}
 
-	// Méthode qui crée nos contraintes de différences
+	// Method that creates all the constraints of the Blocks World
 	private void createConstraint() {
-		// On crée les sous domaines pour les implications
+		// We create the subdomains for the implications
 		Set<Object> domainTrue = new HashSet<>();
 		Set<Object> domainFalse = new HashSet<>();
 		domainTrue.add(true);
@@ -46,9 +46,9 @@ public class BlocksWorldConstraint extends BlocksWorld {
 		// Couple onb, onb
 		for (Variable onb : getSetOnb()) {
 			for (Variable onb2 : getSetOnb()) {
-				// S'ils ne sont pas égaux
+				// If they are not equal
 				if (!onb.equals(onb2)) {
-					// On crée notre contrainte
+					// We create our constraint
 					DifferenceConstraint constraint = new DifferenceConstraint(onb, onb2);
 					setDifferenceConstraint.add(constraint);
 					setConstraint.add(constraint);
@@ -56,24 +56,24 @@ public class BlocksWorldConstraint extends BlocksWorld {
 			}
 			// Couple onb, fixedb
 			for (Variable fixedb : getSetFixedb()) {
-				// Si jamais b peut prendre la valeur de b'
+				// If ever b can take the value of b'
 				if (onb.getDomain().contains(Integer.valueOf(fixedb.getName()))) {
-					// Alors le sous domaine du bloc du dessus sera le bloc du dessous
+					// Then the subdomain of the block on top will be the block below
 					Set<Object> subDomainOnb = new HashSet<>();
 					subDomainOnb.add(Integer.valueOf(fixedb.getName()));
-					Implication constraint = new Implication(onb, subDomainOnb, fixedb, new HashSet<>(domainTrue)); // On crée notre contrainte
+					Implication constraint = new Implication(onb, subDomainOnb, fixedb, new HashSet<>(domainTrue)); // We create our constraint
 					setImplicationFixedb.add(constraint);
 					setConstraint.add(constraint);
 				}
 			}
-			// couple onb, freep
+			// Couple onb, freep
 			for (Variable freep : getSetFreep()) {
-				// Si jamais b peut prendre la valeur de la pile
+				// If ever b can take the value of the pile
 				if (onb.getDomain().contains(Integer.valueOf(freep.getName()))) {
-					// Alors le sous domaine du bloc sera la pile sur laquelle il est posé
+					// Then the subdomain of the block will be the pile on which it is placed
 					Set<Object> subDomainOnb = new HashSet<>();
 					subDomainOnb.add(Integer.valueOf(freep.getName()));
-					Implication constraint = new Implication(onb, subDomainOnb, freep, new HashSet<>(domainFalse)); // On crée notre contrainte
+					Implication constraint = new Implication(onb, subDomainOnb, freep, new HashSet<>(domainFalse)); // We create our constraint
 					setImplicationFreep.add(constraint);
 					setConstraint.add(constraint);
 				}

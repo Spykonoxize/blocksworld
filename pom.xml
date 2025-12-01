@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>blocksworld</groupId>
+    <artifactId>blocksworld</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>blocksworld</groupId>
+            <artifactId>blocksworld-lib</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/blocksworld.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>blocksworld</groupId>
+            <artifactId>bwgenerator</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/bwgenerator.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>blocksworld</groupId>
+            <artifactId>cptests</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/cptests.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>blocksworld</groupId>
+            <artifactId>dataminingtests</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/dataminingtests.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>blocksworld</groupId>
+            <artifactId>modellingtests</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/modellingtests.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>blocksworld</groupId>
+            <artifactId>planningtests</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/planningtests.jar</systemPath>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <sourceDirectory>src</sourceDirectory>
+    </build>
+</project>

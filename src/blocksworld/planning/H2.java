@@ -22,12 +22,12 @@ public class H2 implements Heuristic{
         ArrayList<Variable> sortedListFixedB = new ArrayList<>(sortedSetFixedb);
         float res = 0;
         for(Map.Entry<Variable, Object> entry : but.entrySet()){
-            // Si le bloc est mal placé
+            // If block is in a wrong position
             if(etat.get(entry.getKey()) != entry.getValue() && BlocksWorld.deleteB(entry.getKey().getName()) > -1){
                 res += 1;
-                //Récupération de la variable fixedB 
+                //Retrieving the fixedB variable 
                 Variable fixedB = sortedListFixedB.get(BlocksWorld.deleteB(entry.getKey().getName()));
-                // Si le bloc mal placé est fixé
+                // If the misplaced block is fixed
                 if(etat.get(fixedB) == (Object) true){
                     res += 1;
                 }

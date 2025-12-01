@@ -24,48 +24,41 @@ public class DijkstraPlanner implements Planner {
 
     @Override
     public List<Action> plan() {
-        Map<Map<Variable, Object>, Action> plan = new HashMap<>(); // Cette variable contiendra la pile des actions pour
-                                                                   // arriver au but
-        Map<Map<Variable, Object>, Integer> distance = new HashMap<>(); // Celle-ci contiendra distance pour chaque état
-        Map<Map<Variable, Object>, Map<Variable, Object>> father = new HashMap<>(); // Cette variable contient les pères
-                                                                                    // des noeuds explorés
-        ArrayList<Map<Variable, Object>> goals = new ArrayList<>(); // Celle-ci la liste de nos buts
-        ArrayList<Map<Variable, Object>> open = new ArrayList<>(); // Celle-ci la liste des ouverts, donc des états à
-                                                                   // explorer
-        father.put(etatInit, null); // On ajoute l'état initial dont le père est null car il est l'état de départ
-        distance.put(etatInit, 0); // On ajoute l'état initial dont la distance est 0 car c'est notre point de
-                                   // départ
-        open.add(etatInit); // On ajoute l'état initial car ici c'est le prochain que nous allons explorer
-        // Tant qu'il reste des noeuds à explorer
+        Map<Map<Variable, Object>, Action> plan = new HashMap<>(); // This variable will contain the stack of actions to reach the goal
+        Map<Map<Variable, Object>, Integer> distance = new HashMap<>(); // This one will contain the distance for each state
+        Map<Map<Variable, Object>, Map<Variable, Object>> father = new HashMap<>(); // This variable contains the parents of explored nodes
+        ArrayList<Map<Variable, Object>> goals = new ArrayList<>(); // This one is the list of our goals
+        ArrayList<Map<Variable, Object>> open = new ArrayList<>(); // This one is the list of open states, i.e., states to be explored explorer
+        father.put(etatInit, null); // We add the initial state whose parent is null because it is the starting state
+        distance.put(etatInit, 0); // We add the initial state whose distance is 0 because it is our starting point
+        open.add(etatInit); // We add the initial state because here it is the next one we will explore
+        // While there are nodes to explore
         while (!open.isEmpty()) {
-            // On instancie en prenant l'élément qui est à la plus courte distance et on
-            // l'enlève de la liste des ouverts
+            // We instantiate by taking the element that is at the shortest distance and remove it from the list of open states
             Map<Variable, Object> instantiation = argmin(open, distance);
             open.remove(instantiation);
             if (activate == true) {
                 nodeCount++;
             }
-            // Si on atteint un but on l'ajoute à la liste
+            // If we reach a goal we add it to the list
             if (but.isSatisfiedBy(instantiation)) {
                 goals.add(instantiation);
             }
-            // Pour chaque action applicable à l'état actuel
+            // For each action applicable to the current state
             for (Action action : actions) {
                 if (action.isApplicable(instantiation)) {
-                    // On enregistre l'état suivant dans next
+                    // We record the next state in next
                     Map<Variable, Object> next = action.successor(instantiation);
-                    // Si jamais l'état suivant n'était pas connu alors on initialise sa distance à
+                    // If the next state was not known then we initialize its distance to
                     // +∞
                     if (!distance.containsKey(next)) {
                         distance.put(next, Integer.MAX_VALUE);
                     }
-                    // Si sa distance était déjà connu et si elle est plus petite alors on met à
-                    // jour dans distance
-                    // La distance est calculée du point de départ vers le point où l'on est, donc
-                    // les coûts de parcours s'accumulent
+                    // If its distance was already known and if it is smaller then we update it in distance.
+                    // The distance is calculated from the starting point to the current point, so the traversal costs accumulate
                     if (distance.get(next) > distance.get(instantiation) + action.getCost()) {
                         distance.put(next, distance.get(instantiation) + action.getCost());
-                        // On met à jour father, plan et open en y ajoutant l'état suivant
+                        // We update father, plan and open by adding the next state
                         father.put(next, instantiation);
                         plan.put(next, action);
                         open.add(next);
@@ -73,11 +66,11 @@ public class DijkstraPlanner implements Planner {
                 }
             }
         }
-        // S'il n'y a pas de but alors pas de plan
+        // If there is no goal then no plan
         if (goals.isEmpty()) {
             return null;
         } else {
-            // Sinon on le construit
+            // Otherwise we build it
             return getDijkstraPlan(father, plan, goals, distance);
         }
     }
@@ -86,33 +79,30 @@ public class DijkstraPlanner implements Planner {
             Map<Map<Variable, Object>, Action> plan, ArrayList<Map<Variable, Object>> goals,
             Map<Map<Variable, Object>, Integer> distance) {
         LinkedList<Action> dijPlan = new LinkedList<>();
-        // On va chercher notre but qui est à la plus courte distance grâce à la méthode
-        // argmin
+        // We look for our goal which is at the shortest distance thanks to the argmin method
         Map<Variable, Object> goal = argmin(goals, distance);
-        // Tant qu'on a un père
+        // As long as we have a father
         while (father.get(goal) != null) {
-            // On ajoute au plan l'action du père vers le fils
+            // We add to the plan the action from the father to the son
             dijPlan.add(plan.get(goal));
-            // Enfin le père devient le fils
+            // Finally the father becomes the son
             goal = father.get(goal);
         }
-        // On retorune le plan que l'on a remonté via la boucle au-dessus
+        // We return the plan that we traced back via the loop above
         return dijPlan;
     }
 
     private Map<Variable, Object> argmin(ArrayList<Map<Variable, Object>> open,
             Map<Map<Variable, Object>, Integer> distance) {
-        // On initialise la variable min qui a pour but de contenir l'état le plus
-        // proche avec le premier état de la liste des ouverts
+        // We initialize the variable min which is meant to contain the closest state with the first state of the open list
         Map<Variable, Object> min = open.get(0);
-        // On va parcourir cette liste et comparer les distances entre les noeuds pour
-        // obtenir le plus proche
+        // We will go through this list and compare the distances between the nodes to get the closest
         for (int i = 1; i < open.size(); i++) {
             if (distance.get(open.get(i)) < distance.get(min)) {
                 min = open.get(i);
             }
         }
-        // On retourne le noeud le plus proche
+        // We return the closest node
         return min;
     }
 

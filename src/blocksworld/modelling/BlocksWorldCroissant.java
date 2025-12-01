@@ -16,26 +16,26 @@ public class BlocksWorldCroissant extends BlocksWorldConstraint{
     }
 
     private void constraintCroissant() {
-        // On crée un ensemble qui contient les piles sous formes d'entiers
+        // Creation of the set of piles (as negative integers)
         Set<Object> piles = new HashSet<>();
         for (int pile = 1; pile <= getNbPile(); pile++) {
             piles.add(-pile);
         }
-        // On fait des couples de blocs
+        // We make pairs of blocks
         for (Variable onb1 : getSetOnb()) {
             for (Variable onb2 : getSetOnb()) {
-                Set<Object> subDomainOnb1 = new HashSet<>(); // On crée les sous domaines
-                Set<Object> onbSup = new HashSet<>(piles); // On ajoute au sous domaine de onb2 les piles car il peut être le bloc qui est posé sur une pile
-                int b1 = BlocksWorld.deleteB(onb1.getName()); // On récupère la valeur des blocs
+                Set<Object> subDomainOnb1 = new HashSet<>(); // We create the subdomains
+                Set<Object> onbSup = new HashSet<>(piles); // We add to the subdomain of onb2 the piles because it can be the block that is placed on a pile
+                int b1 = BlocksWorld.deleteB(onb1.getName()); // We retrieve the value of the blocks
                 int b2 = BlocksWorld.deleteB(onb2.getName());
-                // Si b2 est différent et plus petit que b1 alors on ajoute b2 au sous domaine de onb1 car ça implique que ces blocs sont dans un ordre croissant.
+                // If b2 is different and smaller than b1 then we add b2 to the subdomain of onb1 because it implies that these blocks are in ascending order.
                 if (!onb1.equals(onb2) && b2 < b1) {
                     subDomainOnb1.add(b2);
-                    // On ajoute tout les blocs sur lesquels pourrait être posé onb2 (c'est à dire plus petit que lui) à son sous domaine
+                    // We add all the blocks on which onb2 could be placed (that is smaller than it) to its subdomain
                     for (int i = b2 - 1; i >= 0; i--) {
                         onbSup.add(i);
                     }
-                    Implication c = new Implication(onb1, subDomainOnb1, onb2, onbSup); // On crée notre contrainte
+                    Implication c = new Implication(onb1, subDomainOnb1, onb2, onbSup); // We create our constraint
                     setConstraintCroissant.add(c);
                 }
             }

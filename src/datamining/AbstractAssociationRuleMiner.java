@@ -24,7 +24,7 @@ public abstract class AbstractAssociationRuleMiner implements AssociationRuleMin
                 return transaction.getFrequency();
             }
         }
-        throw new IllegalArgumentException("L'ensemble d'items n'est pas dans l'ensemble d'itemsets");
+        throw new IllegalArgumentException("The itemset " + variables + " is not in the database");
     }
 
     public static float confidence(Set<BooleanVariable> premisse, Set<BooleanVariable> conclusion, Set<Itemset> itemsets) {

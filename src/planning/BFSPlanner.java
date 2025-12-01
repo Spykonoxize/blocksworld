@@ -25,45 +25,38 @@ public class BFSPlanner implements Planner {
 
     @Override
     public List<Action> plan() {
-        Map<Map<Variable, Object>, Map<Variable, Object>> father = new HashMap<>(); // Cette variable contient les pères
-                                                                                    // des noeuds explorés
-        Map<Map<Variable, Object>, Action> plan = new HashMap<>(); // Celle-ci contiendra la pile des actions pour
-                                                                   // arriver au but
-        ArrayList<Map<Variable, Object>> closed = new ArrayList<>(); // Celle-ci contiendra la liste des états fermés
-        closed.add(etatInit); // On ajoute l'état initial à la liste des états fermés
-        LinkedList<Map<Variable, Object>> open = new LinkedList<>(); // Celle ci contiendra les états que nous
-                                                                     // explorerons une fois l'état actuel exploré
-        open.add(etatInit); // On ajoute l'état initial car ici c'est le prochain que nous allons explorer
-        father.put(etatInit, null); // On ajoute l'état initial dont le père est null car il est l'état de départ
-        // Si jamais l'état initial est le but alors on retourne un plan vide
+        Map<Map<Variable, Object>, Map<Variable, Object>> father = new HashMap<>(); // This variable contains the parents of explored nodes
+        Map<Map<Variable, Object>, Action> plan = new HashMap<>(); // This one will contain the stack of actions to reach the goal
+        ArrayList<Map<Variable, Object>> closed = new ArrayList<>(); // This one will contain the list of closed states
+        closed.add(etatInit); // We add the initial state to the list of closed states
+        LinkedList<Map<Variable, Object>> open = new LinkedList<>(); // This one will contain the states that we will explore once the current state is explored
+        open.add(etatInit); // We add the initial state because here it is the next one we will explore
+        father.put(etatInit, null); // We add the initial state whose parent is null because it is the starting state
+        // If the initial state is the goal then we return an empty plan
         if (but.isSatisfiedBy(etatInit)) {
             return new Stack<>();
         }
-        // Tant qu'il reste des noeuds à explorer
+        // While there are nodes to explore
         while (!open.isEmpty()) {
-            // On instancie en prenant l'élément en tête de file et on l'ajoute aux états
-            // fermés car nous allons l'explorer
+            // We instantiate by taking the element at the head of the queue and add it to the closed states because we are going to explore it
             Map<Variable, Object> instantiation = open.poll();
             closed.add(instantiation);
             if (activate == true) {
                 nodeCount++;
             }
-            // Pour chacune des actions on va vérifier si on peut la réaliser
+            // For each action we will check if we can perform it
             for (Action action : actions) {
                 if (action.isApplicable(instantiation)) {
-                    // Si oui alors on met dans la variable next le noeud suivant
+                    // If yes then we put the next node in the variable next
                     Map<Variable, Object> next = action.successor(instantiation);
-                    // Si ce noeud ne fait pas partie des états fermés et des états ouverts alors on
-                    // l'ajoute dans la map father avec pour père instanciation et on ajoute
-                    // l'action au plan
+                    // If this node is not part of the closed states and open states then we add it to the father map with instantiation as the parent and add the action to the plan
                     if (!(closed.contains(next)) && !(open.contains(next))) {
                         father.put(next, instantiation);
                         plan.put(next, action);
-                        // Dans la mesure où cet état suivant est le but alors on retourne la création
-                        // du plan
+                        // If this next state is the goal then we return the creation of the plan
                         if (but.isSatisfiedBy(next)) {
                             return getBFSPlan(father, plan, next);
-                            // Sinon on l'ajoute à la liste des ouverts
+                            // Otherwise we add it to the list of open states
                         } else {
                             open.add(next);
                         }
@@ -71,21 +64,21 @@ public class BFSPlanner implements Planner {
                 }
             }
         }
-        // S'il n'y a pas de but alors pas de plan
+        // If there is no goal then no plan
         return null;
     }
 
     private List<Action> getBFSPlan(Map<Map<Variable, Object>, Map<Variable, Object>> father,
             Map<Map<Variable, Object>, Action> plan, Map<Variable, Object> goal) {
         LinkedList<Action> bfsPlan = new LinkedList<>();
-        // Tant qu'on a un père
+        // While the father of the goal is not null
         while (father.get(goal) != null) {
-            // On ajoute au plan l'action du père vers le fils
+            // We add to the plan the action that led to the goal
             bfsPlan.add(plan.get(goal));
-            // Enfin le père devient le fils
+            // Finally the father becomes the son
             goal = father.get(goal);
         }
-        // On retorune le plan que l'on a remonté via la boucle au-dessus
+        // We return the plan that we traced back via the loop above
         return bfsPlan;
     }
 

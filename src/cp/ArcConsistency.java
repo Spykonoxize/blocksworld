@@ -15,7 +15,7 @@ public class ArcConsistency {
         for (Constraint constraint : constraints) {
             Set<Variable> scope = constraint.getScope();
             if (scope.size() != 1 && scope.size() != 2) {
-                throw new IllegalArgumentException("Les contraintes ne sont pas toutes unaires ou binaires");
+                throw new IllegalArgumentException("Constraint scope size must be 1 or 2");
             }
         }
         this.constraints = constraints;

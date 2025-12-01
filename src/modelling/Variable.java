@@ -9,13 +9,13 @@ public class Variable {
     private String name;
     private Set<Object> domain;
 
-    // Constructeurs
+    // Constructors
     public Variable(String name, Set<Object> domain) {
         this.name = name;
         this.domain = domain;
     }
 
-    // Accesseurs
+    // Getters
     public String getName() {
         return name;
     }
@@ -24,8 +24,8 @@ public class Variable {
         return domain;
     }
 
-    // Méthodes
-    // Vérifie si deux variables sont égales en comparant le nom et le domaine
+    // Methods
+    // Checks if two variables are equal by comparing their names
     @Override
     public boolean equals(Object x) {
         if (x instanceof Variable) {
@@ -36,7 +36,7 @@ public class Variable {
     }
 
     @Override
-    // Retourne une valeur de hachage pour l'objet
+    // Return hash code based on the variable's name
     public int hashCode() {
         return Objects.hash(name);
     }

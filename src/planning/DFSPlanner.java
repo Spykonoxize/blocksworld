@@ -21,13 +21,13 @@ public class DFSPlanner implements Planner {
         this.but = but;
     }
 
-    // On initialise les différentes variables
+    // Initiates the depth-first search
     @Override
     public List<Action> plan() {
-        Stack<Action> plan = new Stack<>(); // Cette variable contiendra la pile des actions pour arriver au but
-        ArrayList<Map<Variable, Object>> closed = new ArrayList<>(); // Celle-ci contiendra la liste des états fermés
-        closed.add(etatInit);// On peut déjà y ajouter l'état initial
-        return dfs(etatInit, plan, closed); // On retorune le résultat de la méthode récursive du parcours en profondeur
+        Stack<Action> plan = new Stack<>(); // This variable will contain the stack of actions to reach the goal
+        ArrayList<Map<Variable, Object>> closed = new ArrayList<>(); // This one will contain the list of closed states
+        closed.add(etatInit);// We can already add the initial state to it
+        return dfs(etatInit, plan, closed); // We return the result of the recursive depth-first search method
     }
 
     private List<Action> dfs(Map<Variable, Object> etatInit, Stack<Action> plan,
@@ -35,23 +35,22 @@ public class DFSPlanner implements Planner {
         if (activate == true) {
             nodeCount++;
         }
-        // Si l'état actuel est le but alors on retourne plan
+        // If the current state is the goal then we return the plan
         if (but.isSatisfiedBy(etatInit)) {
             return plan;
         } else {
             for (Action action : actions) {
-                // Pour chaque action on vérifie si on peut l'appliquer à l'état actuel
+                // For each action we check if we can apply it to the current state
                 if (action.isApplicable(etatInit)) {
-                    // Dans ce cas on vient ajouter l'état suivant dans la variable suivant
-                    Map<Variable, Object> suivant = action.successor(etatInit);
-                    // Si cet état suivant n'avait pas été parcouru
-                    if (!closed.contains(suivant)) {
-                        plan.push(action); // On ajoute l'action dans plan
-                        closed.add(suivant); // On ajoute l'état suivant à la liste d'états fermés
-                        // Appel récursif pour parcourir en profondeur
-                        List<Action> subplan = dfs(suivant, plan, closed);
-                        // Si le subplan n'est pas null on le retourne sinon on enlève l'action en haut
-                        // de la pile plan
+                    // In this case we add the next state to the variable next
+                    Map<Variable, Object> next = action.successor(etatInit);
+                    // If this next state has not been explored
+                    if (!closed.contains(next)) {
+                        plan.push(action); // We add the action to the plan
+                        closed.add(next); // We add the next state to the list of closed states
+                        // Recursive call to perform depth-first search
+                        List<Action> subplan = dfs(next, plan, closed);
+                        // If the subplan is not null we return it otherwise we remove the action at the top of the plan stack
                         if (!(subplan == null)) {
                             return subplan;
                         } else {
@@ -60,7 +59,7 @@ public class DFSPlanner implements Planner {
                     }
                 }
             }
-            // S'il n'y a pas de but alors pas de plan
+            // If there is no goal then no plan
             return null;
         }
     }

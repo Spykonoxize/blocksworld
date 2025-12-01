@@ -7,7 +7,7 @@ import modelling.Variable;
 
 public class BlocksWorldRegular extends BlocksWorldConstraint{
 
-    private Set<Implication> setConstraintRegular = new HashSet<>(); // L'ensemble de nos contraintes régulières
+    private Set<Implication> setConstraintRegular = new HashSet<>(); // Set of all regular constraints
 
     public BlocksWorldRegular(int b, int p) {
         super(b, p);
@@ -15,26 +15,26 @@ public class BlocksWorldRegular extends BlocksWorldConstraint{
     }
 
     private void constraintRegular() {
-        // On crée un ensemble qui contient les piles sous formes d'entiers
+        // Creation of the set of piles (as negative integers)
         Set<Object> piles = new HashSet<>();
         for (int pile = 1; pile <= getNbPile(); pile++) {
             piles.add(-pile);
         }
-        // On fait des couples de blocs
+        // We make pairs of blocks
         for (Variable onb1 : getSetOnb()) {
             for (Variable onb2 : getSetOnb()) {
-                // S'ils ne sont pas égaux
+                // If they are not equal
                 if (!onb1.equals(onb2)) {
-                    int diff = BlocksWorld.deleteB(onb2.getName()) - BlocksWorld.deleteB(onb1.getName()); //On calcul l'écart entre les blocs
-                    Set<Object> subDomainOnb1 = new HashSet<>(); // On crée les sous domaines
-                    Set<Object> subDomainOnb2 = new HashSet<>(piles); // On ajoute au sous domaine de onb2 les piles car il peut être le bloc qui est posé sur une pile
-                    subDomainOnb1.add(BlocksWorld.deleteB(onb2.getName())); // onb1 lui doit être posé sur onb2
-                    int nextShouldBe = diff + BlocksWorld.deleteB(onb2.getName()); // On cherche s'il existe un bloc sur lequel pourrait être posé onb2
-                    // Si ce bloc existe alors on l'ajoute au sous domaine de onb2
+                    int diff = BlocksWorld.deleteB(onb2.getName()) - BlocksWorld.deleteB(onb1.getName()); // We calculate the difference between the blocks
+                    Set<Object> subDomainOnb1 = new HashSet<>(); // We create the subdomains
+                    Set<Object> subDomainOnb2 = new HashSet<>(piles); // We add to the subdomain of onb2 the piles because it can be the block that is placed on a pile
+                    subDomainOnb1.add(BlocksWorld.deleteB(onb2.getName())); // onb1 must be placed on onb2
+                    int nextShouldBe = diff + BlocksWorld.deleteB(onb2.getName()); // We look for whether there exists a block on which onb2 could be placed
+                    // If this block exists then we add it to the subdomain of onb2
                     if (nextShouldBe < getNbBlock() && nextShouldBe > -1) {
                         subDomainOnb2.add(nextShouldBe);
                     }
-                    Implication implication = new Implication(onb1, subDomainOnb1, onb2, subDomainOnb2); // On crée notre contrainte
+                    Implication implication = new Implication(onb1, subDomainOnb1, onb2, subDomainOnb2); // We create our constraint
                     setConstraintRegular.add(implication);
                 }
             }

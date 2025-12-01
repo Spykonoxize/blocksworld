@@ -3,13 +3,9 @@ package blocksworld.datamining;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-
 import bwgenerator.BWGenerator;
-import datamining.Apriori;
-import datamining.AssociationRule;
 import datamining.BooleanDatabase;
 import datamining.BruteForceAssociationRuleMiner;
-import datamining.Itemset;
 import modelling.BooleanVariable;
 
 public class Executable {
